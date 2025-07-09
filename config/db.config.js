@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 import config from './index.js'
-
+console.log(config.database)
 // Sequelize ORM orqali ma'lumotlar bazasiga ulanish
 // database - ma'lumotlar bazasi nomi, password - parol, username - foydalanuvchi nomi
 const sequelize = new Sequelize(config.database.database, config.database.username, config.database.password, {
