@@ -40,7 +40,7 @@ EMAIL_PASS=your_email_password
 
 --
 
-### Docker Ishga Tushurish
+## ⚙️ Docker Ishga Tushurish
 docker-compose up --build
 
 
