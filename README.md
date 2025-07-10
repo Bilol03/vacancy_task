@@ -41,11 +41,16 @@ EMAIL_PASS=your_email_password
 --
 
 ## ⚙️ Docker Ishga Tushurish
-docker-compose up --build
+```bash
 
+docker-compose up --build
+```
 
 ## Documentation uchun
+
+```bash
 http://localhost:PORT/api-docs
+```
 
 
 
