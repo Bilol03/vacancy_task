@@ -37,6 +37,7 @@ REDIS_PORT=6379
 
 EMAIL_USER=your_email@example.com
 EMAIL_PASS=your_email_password
+```
 
 --
 ```
