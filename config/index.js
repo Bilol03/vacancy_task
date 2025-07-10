@@ -31,5 +31,14 @@ export default {
   logger: {
     level: process.env.LOG_LEVEL || 'info',
     filePath: process.env.LOG_FILE || './logs/app.log'
+  },
+
+  redis: {
+    redis_url: process.env.REDIS_URL
+  },
+
+  email: {
+    email: process.env.MY_EMAIL,
+    passwd: process.env.MY_EMAIL_PASSWORD
   }
 };

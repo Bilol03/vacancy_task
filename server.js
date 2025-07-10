@@ -7,6 +7,12 @@ import config from './config/index.js'
 import swaggerSpec from './config/swagger.config.js'
 import { ROUTES } from './constants/index.js'
 import logger from './utils/logger.util.js'
+import rateLimit from 'express-rate-limit'
+import authRoute from './routes/auth.route.js'
+import { apiResponse } from './utils/response.util.js'
+import { redisClient } from './config/redis.config.js'
+
+
 const app = express()
 const PORT = config.server.port
 const apiPrefix = ROUTES.API_PREFIX
@@ -21,6 +27,15 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// Autentifikatsiya yo'nalishlari uchun so'rovlar chastotasini cheklash
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 daqiqa
+  max: 10, // Har bir oyna uchun 10 ta so'rov
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many login attempts, please try again later'
+})
+
 // Swagger hujjatlarini sozlash
 app.use('/api-docs', swaggerUi.serve)
 app.get('/api-docs', swaggerUi.setup(swaggerSpec))
@@ -30,6 +45,8 @@ app.get('/api-docs.json', (req, res) => {
 	res.setHeader('Content-Type', 'application/json')
 	res.send(swaggerSpec)
 })
+app.use(`${apiPath}/auth`, authLimiter, authRoute)
+
 
 
 logger.info('All routes mounted successfully')
@@ -46,7 +63,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   logger.error('Express error handler caught:', { error: err.message, stack: err.stack })
   if (!res.headersSent) {
-    apiResponse.error(res, 'An unexpected error occurred')
+    apiResponse.error(res, 'An unexpected error occurred ')
   }
 })
 
@@ -55,6 +72,9 @@ const startServer = async () => {
 	try {
 		await sequelize.sync()
 		logger.info('Connected to database successfully')
+
+        await redisClient.connect()
+        logger.info('✅ Redis connected')
 
 		const server = app.listen(PORT, async () => {
 			logger.info(`Server is running on port http://localhost:${PORT}`)

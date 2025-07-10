@@ -9,9 +9,9 @@ const options = {
   definition: { // API ta'rifi
     openapi: '3.0.0', // OpenAPI spetsifikatsiya versiyasi
     info: { // API haqida umumiy ma'lumot
-      title: 'Chatbot Admin API',
+      title: 'Vacancy Task API',
       version: '1.0.0',
-      description: 'API documentation for the Chatbot Admin application',
+      description: 'API documentation for the Vacancy Task application',
     },
     servers: [ // API serverlari ro'yxati
       {
