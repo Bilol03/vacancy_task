@@ -46,7 +46,65 @@ const verify = async (body) => {
     return {status: 201, message: "Success", newUser}
 }
 
+
+const login = async (body) => {
+	try {
+		let { email, password } = body
+		
+		// Find active user
+		let userData = await User.findOne({ where: { email, status: "active" } })
+		if (!userData) return { status: HTTP_STATUS.NOT_FOUND, mesasge: 'User not found'}
+		
+		// Check if this is an admin login attempt
+		const adminEmail = process.env.ADMIN_EMAIL
+		const isAdminEmail = email === adminEmail
+		
+		// Admin authentication - must match both email AND password
+		if (isAdminEmail) {
+			const adminPassword = process.env.ADMIN_PASSWORD
+			if (password === adminPassword) {
+				// Generate token for admin
+				const token = jwt.sign(
+					{ id: userData.id, email: userData.email, role: 'admin' },
+					config.auth.secretKey,
+					{ 
+						algorithm: AUTH.JWT_ALGORITHM,
+						expiresIn: AUTH.TOKEN_EXPIRY 
+					}
+				)
+				return { userData, token }
+			} else {
+				// Don't provide specific error for admin login failure (security)
+				return {status: HTTP_STATUS.UNAUTHORIZED, message: 'Invalid credentials'}
+			}
+		}
+
+		// Regular user authentication - verify password
+		const isPasswordValid = await bcrypt.compare(password, userData.password)
+		if (!isPasswordValid) {
+			return {status: HTTP_STATUS.UNAUTHORIZED, message: 'Invalid credentials'}
+		}
+		
+		// Generate token for regular user
+		const token = jwt.sign(
+			{ id: userData.id, email: userData.email },
+			config.auth.secretKey,
+			{ 
+				algorithm: AUTH.JWT_ALGORITHM,
+				expiresIn: AUTH.TOKEN_EXPIRY 
+			}
+		)
+
+		return { status: HTTP_STATUS.OK, message: "Successfully logged in", token }
+	} catch (error) {
+		logger.error('Error in login service:', { error })
+		throw error
+	}
+}
+
+
 export default {
     register, 
-    verify
+    verify,
+    login
 }
