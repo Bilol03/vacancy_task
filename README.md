@@ -23,20 +23,51 @@ Bu loyiha foydalanuvchilarni ro'yxatdan o'tkazish, tizimga kirish va email orqal
 Loyiha papkasida `.env` faylini yarating va quyidagilarni kiriting:
 
 ```env
-PORT=3000
-JWT_SECRET=your_jwt_secret_at_least_32_characters
+# Server Configuration
+PORT=8080
+NODE_ENV=development
 
-DB_USER=db
-DB_PASS=your_db_password
-DB_NAME=auth_db
+# API Configuration
+API_PREFIX=/api
+API_VERSION=v1
+
+# Redis Configuration 
+REDIS_URL=redis://redis:6379
+
+# Database Configuration
 DB_HOST=db
 DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=2003
+DB_NAME=vacancy_task
 
-REDIS_HOST=redis
-REDIS_PORT=6379
 
-EMAIL_USER=your_email@example.com
-EMAIL_PASS=your_email_password
+# Authentication
+SECRET_KEY=your_secret_key_for_jwt_at_least_32_chars_long
+TOKEN_EXPIRY=1h
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE=./logs/app.log
+
+# Security
+CORS_ORIGIN=*
+RATE_LIMIT_WINDOW_MS=900000  # 15 minutes in milliseconds
+RATE_LIMIT_MAX=100  # Maximum 100 requests per window
+
+
+# Optional: Swagger Documentation
+SWAGGER_TITLE=swagger_title
+SWAGGER_DESCRIPTION=swagger_title
+SWAGGER_VERSION=1.0.0
+SWAGGER_SERVER_URL=http://localhost:8080
+
+
+# Google gmail info
+MY_EMAIL=email@example.com
+MY_EMAIL_PASSWORD=your_email_password
+
+
 ```
 
 
